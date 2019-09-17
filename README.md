@@ -17,7 +17,6 @@ zhihu search 白居易 | less -I
 ![](https://github.com/quanxiaoxiao/zhihu-collection/blob/master/static/search.gif?raw=true)
 
 
-
 ## 查询新的更新
 
 zhihu updated 2019-09-01
