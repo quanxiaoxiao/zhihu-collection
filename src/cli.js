@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 const yargs = require('yargs');
 const moment = require('moment');
 const pkg = require('../package.json');
@@ -36,6 +37,18 @@ yargs // eslint-disable-line
         process.exit(1);
       }
       searchByKeywords(keywords);
+    },
+  )
+  .command(
+    'clean',
+    '清除数据',
+    () => ({}),
+    () => {
+      try {
+        fs.unlinkSync(path.resolve(config.dir, 'db.json'));
+      } catch (error) {
+        // ignore
+      }
     },
   )
   .command(

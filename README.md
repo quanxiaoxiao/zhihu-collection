@@ -28,3 +28,9 @@ zhihu search 白居易 | less -I
 ```
 zhihu updated 2019-09-01
 ```
+
+## 清除数据
+
+```
+zhihu clean
+```
