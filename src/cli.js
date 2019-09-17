@@ -3,9 +3,6 @@ const path = require('path');
 const yargs = require('yargs');
 const moment = require('moment');
 const pkg = require('../package.json');
-const searchByKeywords = require('./queries/searchByKeywords');
-const updated = require('./queries/updated');
-const fetch = require('./fetch');
 const config = require('./config');
 
 try {
@@ -16,6 +13,10 @@ try {
 } catch (error) {
   fs.mkdirSync(config.dir);
 }
+
+const searchByKeywords = require('./queries/searchByKeywords');
+const updated = require('./queries/updated');
+const fetch = require('./fetch');
 
 
 yargs // eslint-disable-line

@@ -29,11 +29,18 @@ exports.get = (url, options = {}) => new Promise((resolve, reject) => {
       reject();
     } else {
       const buf = [];
-      res.on('data', (chunk) => {
+      const handleData = (chunk) => {
         buf.push(chunk);
-      });
-      res.on('end', () => {
+      };
+      const handleEnd = () => {
         resolve(Buffer.concat(buf));
+      };
+      res.on('data', handleData);
+      res.on('end', handleEnd);
+      res.on('error', () => {
+        res.off('data', handleData);
+        res.off('end', handleEnd);
+        reject();
       });
     }
   });
