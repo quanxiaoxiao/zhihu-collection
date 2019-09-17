@@ -7,14 +7,14 @@ npm install -g zhihu-collection
 
 zhihu fetch
 
-![](./static/fetch.git)
+![](https://github.com/quanxiaoxiao/zhihu-collection/static/fetch.git)
 
 
 ## 关键词搜索
 
 zhihu search 白居易 | less -I
 
-![](./static/search.git)
+![](https://github.com/quanxiaoxiao/zhihu-collection/static/search.git)
 
 
 ## 查询新的更新
