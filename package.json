@@ -1,0 +1,22 @@
+{
+  "name": "zhihu-collection",
+  "version": "1.0.0",
+  "description": "",
+  "main": "bin/zhihu.js",
+  "bin": {
+    "zhihu": "bin/zhihu.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.3",
+    "lodash": "^4.17.15",
+    "lowdb": "^1.0.0",
+    "moment": "^2.24.0",
+    "open": "^6.4.0",
+    "puppeteer": "^1.20.0",
+    "terminal-image": "^0.2.0",
+    "yargs": "^14.0.0"
+  }
+}
