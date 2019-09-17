@@ -16,7 +16,9 @@ zhihu fetch
 
 ## 关键词搜索
 
+```
 zhihu search 白居易 | less -I
+```
 
 ![](https://github.com/quanxiaoxiao/zhihu-collection/blob/master/static/search.gif?raw=true)
 

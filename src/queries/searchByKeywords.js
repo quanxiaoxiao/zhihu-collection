@@ -23,5 +23,25 @@ module.exports = (keywords) => {
     .filter(item => !/zhuanlan/.test(item.url));
   const articleList = list
     .filter(item => /zhuanlan/.test(item.url));
+
+  console.log('\n\n');
   console.log(`total: ${list.length}, question: ${questionList.length}, article: ${articleList.length}`);
+  console.log('\n');
+  console.log('question list:');
+  const questionStr = questionList.map(item => [
+    item.name,
+    item.url,
+    '\n',
+  ].join('\n')).join('');
+
+  console.log(questionStr);
+
+  console.log('\n');
+  console.log('article list:');
+  const articleStr = articleList.map(item => [
+    item.name,
+    item.url,
+    '\n',
+  ].join('\n')).join('');
+  console.log(articleStr);
 };
