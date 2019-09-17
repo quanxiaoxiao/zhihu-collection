@@ -6,9 +6,16 @@
   "bin": {
     "zhihu": "bin/zhihu.js"
   },
-  "keywords": [],
+  "description": "获取知乎个人收藏夹的数据及关键字查询",
+  "keywords": ["知乎"],
+  "author": "zhedongHu <quan_xiaoxiao@qq.com>",
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:quanxiaoxiao/zhihu-collection.git"
+  },
+  "homepage": "https://github.com/quanxiaoxiao/zhihu-collection",
   "dependencies": {
     "cheerio": "^1.0.0-rc.3",
     "lodash": "^4.17.15",

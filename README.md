@@ -1,11 +1,15 @@
 ## 安装
 
+```
 npm install -g zhihu-collection
+```
 
 
 ## 获取知乎个人收藏夹的数据
 
+```
 zhihu fetch
+```
 
 ![](https://github.com/quanxiaoxiao/zhihu-collection/blob/master/static/fetch.gif?raw=true)
 
@@ -19,4 +23,6 @@ zhihu search 白居易 | less -I
 
 ## 查询新的更新
 
+```
 zhihu updated 2019-09-01
+```
