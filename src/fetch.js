@@ -1,6 +1,7 @@
 const path = require('path');
 const open = require('open');
 const puppeteer = require('puppeteer');
+const cheerio = require('cheerio');
 const os = require('os');
 // const terminalImage = require('terminal-image');
 const _ = require('lodash');
@@ -9,6 +10,8 @@ const collectCollections = require('./run/collectCollections');
 const collectZhis = require('./run/collectZhis');
 const collectQuestions = require('./run/collectQuestions');
 const collectZhuanLan = require('./run/collectZhuanLan');
+
+const request = require('./request');
 const config = require('./config');
 
 const qrcodeImagePathname = path.resolve(os.tmpdir(), '11111111111111111111111111111111111.png');
@@ -32,15 +35,15 @@ module.exports = async () => {
   });
   */
 
-  page.on('request', (request) => {
+  page.on('request', (req) => {
     const headers = {
-      ..._.omit(request.headers(), [
+      ..._.omit(req.headers(), [
         'x-zse-83',
       ]),
       'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/76.0.3809.100 Chrome/76.0.3809.100 Safari/537.36',
     };
 
-    request.continue({ headers });
+    req.continue({ headers });
   });
 
   await page.goto('https://www.zhihu.com/signin');
@@ -63,39 +66,45 @@ module.exports = async () => {
   console.log('login success');
   console.time('爬取耗时');
   const { url_token: token } = await meResponse.json();
-  page.goto(`https://www.zhihu.com/people/${token}/collections?page=1`);
-  const collectionResponse = await page.waitForResponse((response) => {
-    const url = response.url();
-    return /\/favlists\?/.test(url);
-  });
-  const data = await collectionResponse.json();
-  const dataList = data
-    .data
-    .map(item => ({
-      name: item.title,
-      id: item.url.match(/(?<=\/)\d+$/)[0],
-      count: item.answer_count,
-    }));
-  await page.waitFor(() => !!document.querySelector('#Profile-collections > div:nth-child(2) > .List-item'));
-  const list = await page.evaluate(() => {
-    const arr = document.querySelectorAll('#Profile-collections > div:nth-child(2) > .List-item');
-    return [...arr].map((item) => {
-      const elem = item.querySelector('div > h2 > div > a');
-      const count = item
-        .querySelector('.ContentItem-meta .ContentItem-status span:nth-child(2)')
-        .innerText
-        .match(/^\d+/)[0];
-      return {
-        name: elem.innerText,
-        id: elem.getAttribute('href').match(/(?<=\/)\d+$/)[0],
-        count: parseInt(count, 10),
-      };
-    });
-  });
   const cookies = await page.cookies();
   const cookieStr = cookies.map(item => `${item.name}=${item.value}`).join('; ');
   config.cookie = cookieStr;
-  await collectCollections([...list, ...dataList]);
+  await browser.close();
+  const buf = await request.get(`https://www.zhihu.com/people/${token}/collections?page=1`);
+  const $ = cheerio.load(buf.toString());
+  const $script = $('#js-initialData');
+  if ($script.length === 0) {
+    process.exit(1);
+  }
+  const { initialState } = JSON.parse($script.get()[0].children[0].data);
+  const collections = initialState.entities.favlists;
+  const list = Object.entries(collections)
+    .map(([, value]) => ({
+      name: value.title,
+      id: `${value.id}`,
+      count: value.answerCount,
+    }));
+  const $paginations = $('.Pagination > button');
+  if ($paginations.length > 2) {
+    const $last = $paginations.eq($paginations.length - 2);
+    const totalPage = parseInt($last.text(), 10);
+
+    await [...Array(totalPage)]
+      .map((d, i) => i)
+      .slice(1)
+      .map(n => `https://www.zhihu.com/api/v4/members/shan-ren-88/favlists?include=data%5B*%5D.updated_time%2Canswer_count%2Cfollower_count%2Cis_public&offset=${n * 20}&limit=20`)
+      .reduce(async (acc, cur) => {
+        await acc;
+        const ret = await request.get(cur);
+        const { data } = JSON.parse(ret.toString());
+        list.push(...data.map(item => ({
+          name: item.title,
+          id: `${item.id}`,
+          count: item.answer_count,
+        })));
+      }, Promise.resolve);
+  }
+  await collectCollections(list);
   await collectZhis();
   await collectZhuanLan();
   await collectQuestions();
