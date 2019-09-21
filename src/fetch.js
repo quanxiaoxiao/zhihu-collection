@@ -1,9 +1,9 @@
-const path = require('path');
-const open = require('open');
+// const path = require('path');
+// const open = require('open');
 const puppeteer = require('puppeteer');
 const cheerio = require('cheerio');
-const os = require('os');
-// const terminalImage = require('terminal-image');
+// const os = require('os');
+const terminalImage = require('terminal-image');
 const _ = require('lodash');
 const db = require('./db');
 const collectCollections = require('./run/collectCollections');
@@ -13,7 +13,7 @@ const collection = require('./run/collection');
 const request = require('./request');
 const config = require('./config');
 
-const qrcodeImagePathname = path.resolve(os.tmpdir(), '11111111111111111111111111111111111.png');
+// const qrcodeImagePathname = path.resolve(os.tmpdir(), '11111111111111111111111111111111111.png');
 
 module.exports = async () => {
   const browser = await puppeteer.launch();
@@ -24,7 +24,6 @@ module.exports = async () => {
   });
   await page.setRequestInterception(true);
 
-  /*
   page.on('response', async (res) => {
     const url = res.url();
     if (/\/login\/qrcode\/[^/]+\/image/.test(url)) {
@@ -32,7 +31,6 @@ module.exports = async () => {
       console.log(await terminalImage.buffer(buf));
     }
   });
-  */
 
   page.on('request', (req) => {
     const headers = {
@@ -53,11 +51,13 @@ module.exports = async () => {
     return /\/login\/qrcode\/[^/]+\/image/.test(url);
   });
 
-  const $image = await page.$('#root > div > main > div > div > div.Card.SignContainer-content > div > div.Qrcode-container.SignInQrcode');
+  const $image = await page.$('#root > div > main > div > div > div.Card.SignContainer-content > div > div.Qrcode-container.SignInQrcode'); // eslint-disable-line
+  /*
   await $image.screenshot({
     path: qrcodeImagePathname,
   });
   open(qrcodeImagePathname);
+  */
   const meResponse = await page.waitForResponse((response) => {
     const url = response.url();
     return /\/api\/v4\/me\b/.test(url);

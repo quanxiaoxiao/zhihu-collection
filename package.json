@@ -1,6 +1,6 @@
 {
   "name": "zhihu-collection",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "description": "",
   "main": "bin/zhihu.js",
   "bin": {
