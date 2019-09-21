@@ -1,46 +1,45 @@
 const db = require('../db');
 const getZhuanLan = require('./getZhuanLan');
+const getQuestion = require('./getQuestion');
 const Queue = require('../Queue');
 
 module.exports = () => new Promise(async (resolve) => {
   const list = db
     .get('zhis')
-    .value()
-    .filter(item => /zhuanlan/.test(item.url));
-
+    .value();
   const queue = new Queue();
 
-  queue.on('success', async (zhuanlan) => {
-    if (zhuanlan) {
+  queue.on('success', async (item) => {
+    if (item) {
       const zhi = db
         .get('zhis')
         .find({
-          url: zhuanlan.url,
+          url: item.url,
         })
         .value();
-      if (!zhi.content || zhi.content !== zhuanlan.content) {
+      if (!zhi.content || zhi.content !== item.content) {
         db
           .get('zhis')
           .find({
-            url: zhuanlan.url,
+            url: item.url,
           })
           .assign({
-            ...zhuanlan,
+            ...item,
             updateCount: zhi.updateCount ? zhi.updateCount + 1 : 1,
           })
           .write();
-      } else if (zhi.upvoteCount !== zhuanlan.upvoteCount) {
+      } else if (zhi.upvoteCount !== item.upvoteCount) {
         db
           .get('zhis')
           .find({
-            url: zhuanlan.url,
+            url: item.url,
           })
           .assign({
-            upvoteCount: zhuanlan.upvoteCount,
+            upvoteCount: item.upvoteCount,
           })
           .write();
       }
-      console.log(`zhuanlan- name:${zhi.name} url:${zhi.url} upvoteCount:${zhi.upvoteCount}`);
+      console.log(`${/zhuanlan/.test(zhi.url) ? 'zhuanlan' : 'question'} - name:${zhi.name} url:${zhi.url} upvoteCount:${zhi.upvoteCount}`);
     }
   });
 
@@ -51,7 +50,11 @@ module.exports = () => new Promise(async (resolve) => {
   });
 
   list
-    .forEach((zhiItem) => {
-      queue.in(getZhuanLan, zhiItem);
+    .forEach((item) => {
+      if (/zhuanlan/.test(item.url)) {
+        queue.in(getZhuanLan, item);
+      } else {
+        queue.in(getQuestion, item);
+      }
     });
 });

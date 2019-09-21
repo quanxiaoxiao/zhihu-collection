@@ -8,8 +8,7 @@ const _ = require('lodash');
 const db = require('./db');
 const collectCollections = require('./run/collectCollections');
 const collectZhis = require('./run/collectZhis');
-const collectQuestions = require('./run/collectQuestions');
-const collectZhuanLan = require('./run/collectZhuanLan');
+const collection = require('./run/collection');
 
 const request = require('./request');
 const config = require('./config');
@@ -106,8 +105,7 @@ module.exports = async () => {
   }
   await collectCollections(list);
   await collectZhis();
-  await collectZhuanLan();
-  await collectQuestions();
+  await collection();
   const zhiList = db.get('zhis').value();
   const len = zhiList.length;
   let articleCount = 0;
