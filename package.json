@@ -1,14 +1,14 @@
 {
   "name": "zhihu-collection",
-  "version": "1.1.0",
-  "description": "",
+  "version": "1.1.1",
+  "description": "获取知乎个人收藏夹的数据及关键字查询",
   "main": "bin/zhihu.js",
   "bin": {
     "zhihu": "bin/zhihu.js"
   },
-  "description": "获取知乎个人收藏夹的数据及关键字查询",
-  "keywords": ["知乎"],
-  "author": "zhedongHu <quan_xiaoxiao@qq.com>",
+  "keywords": [
+    "知乎"
+  ],
   "author": "",
   "license": "MIT",
   "repository": {
@@ -18,12 +18,13 @@
   "homepage": "https://github.com/quanxiaoxiao/zhihu-collection",
   "dependencies": {
     "cheerio": "^1.0.0-rc.3",
+    "jimp": "^0.8.4",
     "lodash": "^4.17.15",
     "lowdb": "^1.0.0",
     "moment": "^2.24.0",
-    "open": "^6.4.0",
     "puppeteer": "^1.20.0",
-    "terminal-image": "^0.2.0",
+    "qrcode-reader": "^1.0.4",
+    "qrcode-terminal": "^0.12.0",
     "yargs": "^14.0.0"
   }
 }
